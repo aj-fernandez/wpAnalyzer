@@ -21,8 +21,6 @@ def banner():
           | |                           __/ |             
           |_|                          |___/   beta version""")
 
-
-
 def Target_Files(pwd):
     allFiles = list(Path(pwd).rglob("*"))
     return(allFiles)
@@ -35,8 +33,9 @@ def Yara_Checker():
 
 
 def Core_Analysis(paths):
-    print("\n\nCORE FILES HASHES ANALYSYS")
-    ver = input("\nWhat is the wordpress version of target site?: ")
+    print("\n_______________________CORE FILES HASHES ANALYSIS_______________________\n")
+    ver = input("What is the wordpress version of target site?: ")
+    print("\n")
     fullBadFiles = [None]
     apiHashes = Pull_Json(ver)
     for pthFile in paths:
@@ -45,6 +44,9 @@ def Core_Analysis(paths):
             badFile = str(Compare_Hash(apiHashes, checksum, pthFile, ver))
             if badFile != "None":
                 fullBadFiles.append(badFile)
+    print("________________________________________________________________________\n")
+    if fullBadFiles == [None]:
+        print("All analyzed files have the correct hashes\n")
     return(fullBadFiles, ver)
 
 
@@ -100,7 +102,7 @@ def Yara_Malware_Analysis():
     indexRules = yara.compile(filepath="./yaraRules/rules-master/malware_index.yar")
     excludeSuffix = [".yar", ".yara"]
     allFiles = Target_Files(".")
-    print("\n\n_______________________YARA MALWARE ANALYSYS_______________________\n")
+    print("\n\n_______________________YARA MALWARE ANALYSIS_______________________\n")
     for pthFile in allFiles:
         if pthFile.is_dir() or str(pthFile.suffix) in excludeSuffix:
             continue
@@ -109,39 +111,39 @@ def Yara_Malware_Analysis():
             continue
         else:
             print(malwareMatch, "--> RULE MATCHED in file --> {}".format(str(pthFile)))
-    print("\n\n_____________________________________________________________________\n")
+    print("____________________________________________________________________\n")
     Handler()
 
 def Yara_Webshells_Analysis():
     indexRules = yara.compile(filepath="./yaraRules/rules-master/Webshells_index.yar")
     allFiles = Target_Files(".")
     excludeDir = "yaraRules/rules-master/Webshells"
-    print("\n_______________________YARA WEBSHELL ANALYSYS_______________________\n")
+    print("\n_______________________YARA WEBSHELL ANALYSIS_______________________\n")
     for pthFile in allFiles:
         if pthFile.is_dir() or str(pthFile.parent) == excludeDir:
             continue
-        webShellMatch = indexRules.match(str(pthFile))
+        webShellMatch = indexRules.match(data=open(str(pthFile), "rb").read())
         if not webShellMatch:
             continue
         else:
             print(webShellMatch, "--> RULE MATCHED in file --> {}".format(str(pthFile)))
-    print("\n_____________________________________________________________________\n")
+    print("____________________________________________________________________\n")
 
     Handler()
 
 def Yara_Personal_Rules():
     rule = yara.compile(filepath="./lepetitpol.yar")
     allFiles = Target_Files(".")
-    print("\n\n_______________________YARA PERSONAL RULE ANALYSYS_______________________\n")
+    print("\n\n_______________________YARA PERSONAL RULE ANALYSIS_______________________\n")
     for pthFile in allFiles:
         if pthFile.is_dir():
             continue
-        match = rule.match(str(pthFile))
+        match = rule.match(data=open(str(pthFile), "rb").read())
         if not match:
             continue
         else:
             print(match, "--> RULE MATCHED in file --> {}".format(str(pthFile)))
-    print("\n__________________________________________________________________________\n")
+    print("_________________________________________________________________________\n")
 
     Handler()
 
@@ -294,3 +296,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

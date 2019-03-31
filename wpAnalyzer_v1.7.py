@@ -244,7 +244,7 @@ Core files from trust source.\n3. Find suspect variables and functions.\n4\
 . Download YARA Rules (latest).\n5. Malware analysis using YARA.\n6. WebShells \
 analysis using YARA.\n7. Load personal rule file and launch YARA.\n8. Exit\n\n")
 
-    choice = input("Select an options: ")
+    choice = input("Select an option: ")
 
     while True:
         if choice == "1":

@@ -1,5 +1,4 @@
-from urllib.request import urlopen as urlReq
-from urllib.request import urlretrieve as urlDownload
+from urllib.request import urlopen as urlReq, urlretrieve as urlDownload, Request 
 from pathlib import Path
 import hashlib
 import sys

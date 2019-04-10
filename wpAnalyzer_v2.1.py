@@ -94,7 +94,6 @@ def WP_CoreFiles_Replace(listBadFiles, ver):
 
 def Compare_Strings(line):
     listPatterns = [r"define\('DB_NAME', '", r"define\('DB_USER', '", r"define\('DB_PASSWORD', '", r"define\('DB_HOST', '"]
-    # with open("wp-config.php", "r", encoding="ISO-8859-1") as configFile:
     for pattern in listPatterns:
         if line.replace(" ", "").startswith(pattern.replace(" ", "").replace("\\", "")):
             dataLine = Parse_WP_Config(pattern)

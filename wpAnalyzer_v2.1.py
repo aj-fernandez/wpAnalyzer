@@ -80,15 +80,15 @@ def WP_CoreFiles_Replace(listBadFiles, ver):
             exit
         elif choice == "y":
             os.rename("wp-config.php", "wp-config.php.OLD")
-        with open("wp-config.php", "w", encoding="ISO-8859-1") as configFile:    
-            with open(NewCoreFolder + "/wordpress/wp-config-sample.php", "r", encoding="ISO-8859-1") as sampleFile:
-                lines = sampleFile.readlines()
-                for line in lines:
-                    parsedData = Compare_Strings(line)
-                    if parsedData:
-                        configFile.write(parsedData)
-                        continue
-                    configFile.write(line)
+            with open("wp-config.php", "w", encoding="ISO-8859-1") as configFile:    
+                with open(NewCoreFolder + "/wordpress/wp-config-sample.php", "r", encoding="ISO-8859-1") as sampleFile:
+                    lines = sampleFile.readlines()
+                    for line in lines:
+                        parsedData = Compare_Strings(line)
+                        if parsedData:
+                            configFile.write(parsedData)
+                            continue
+                        configFile.write(line)
     elif recovery == "n":
         Handler()
 

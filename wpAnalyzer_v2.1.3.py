@@ -276,7 +276,7 @@ def Garbage_Collector(ver):
     Path.unlink(Path("./wp_" + ver + ".tar.gz"))
     Handler()
 
-def Scan_Wpvuldb(ver, target, ):
+def Scan_Wpvuldb(ver):
     token = "YumCILXosAAvgLFDbAjK2z3iX4O41GS18exkg6KMM6U"
     base = "https://wpvulndb.com/api/v3/wordpresses/"
     authHeader = {"Authorization": "Token token=" + token}
@@ -284,7 +284,18 @@ def Scan_Wpvuldb(ver, target, ):
     apiReq = Request(url, headers=authHeader)
     siteResponse = urlReq(apiReq).read()
     jsonResponse = json.loads(siteResponse.decode("ISO-8859-1"))
-    print(jsonResponse)
+    versVuln = jsonResponse[ver]["vulnerabilities"]
+
+    for vuln in versVuln:
+        vulName = vuln.get("title")
+        vulType = vuln.get("vuln_type")
+        vulDate = vuln.get("created_at")
+        vulRef = vuln["references"].get("url")
+        vulCVE = vuln["references"].get("cve")
+    
+        print("\n\nVulnerability name: " + vulName + "\nType: " + vulType + "\nDate: \
+" + vulDate + "\nReferences: " + str(vulRef) + "\nCVE: " + str(vulCVE))
+
     Handler()
 
 def Handler(*args):
@@ -349,3 +360,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

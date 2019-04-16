@@ -1,6 +1,7 @@
 from urllib.request import urlopen as urlReq, urlretrieve as urlDownload, Request
 from pathlib import Path
-import hashlib, traceback
+import hashlib
+import traceback
 import sys
 import re
 import json
@@ -56,6 +57,7 @@ def Core_Analysis(paths):
     print("________________________________________________________________________\n")
     if fullBadFiles == [None]:
         print("All analyzed files keep the correct hashes\n")
+    print("\tTotal files with anomalous hashes: {}".format(len(fullBadFiles)-1))
     badHashFiles = fullBadFiles
 
 
@@ -108,7 +110,7 @@ def Compare_Strings(line):
     match = [pattern for pattern in listPatterns if line.replace(
         " ", "").startswith(pattern.replace(" ", "").replace("\\", ""))]
     if match:
-        # "match" is a list (list is what return a comprehension list) and Parse_WP_Config receive a str because of this: "".join(match)
+        # "match" is a list (list is what return a list comprehension) and Parse_WP_Config receive a str because of this: "".join(match)
         return(Parse_WP_Config("".join(match)))
 
 
@@ -142,22 +144,25 @@ def Find_Suspect_Code(paths):
 
 
 def Yara_Malware_Analysis():
-    # A recursive function needed here; some rules included in index rules file are broken so we need caught this 
-    # exception, parse the message for match the malformed rule name and remove it, first from index file and the file itself later. 
+    # A recursive function needed here; some rules included in index rules file are broken so we need caught this
+    # exception, parse the message for match the malformed rule name and remove it, first from index file and the file itself later.
     try:
-        indexRules = yara.compile(filepath="./yaraRules/rules-master/malware_index.yar")
+        indexRules = yara.compile(
+            filepath="./yaraRules/rules-master/malware_index.yar")
     except yara.SyntaxError:
-        #Extract malformed rule filename from "sys.exc_info(): return information about the exception that is being handled" 
+        # Extract malformed rule filename from "sys.exc_info(): return information about the exception that is being handled"
         excFile = str(sys.exc_info()[1]).split("(")[0]
-        print("\nError loading: " + "\x1b[1;31m" + Path(excFile).name + "\x1b[0;m" + " rule, it will be removed")
+        print("\nError loading: " +
+              "\x1b[1;31m" + Path(excFile).name + "\x1b[0;m" + " rule, it will be removed")
         modContent = []
         with open("./yaraRules/rules-master/malware_index.yar", "r", encoding="ISO-8859-1") as indexFile:
             # List comprehensions are shorter TODO: Change all modification files functions on this way
-            modContent += [line for line in indexFile.readlines() if Path(excFile).name not in line]
+            modContent += [line for line in indexFile.readlines()
+                           if Path(excFile).name not in line]
         with open("./yaraRules/rules-master/malware_index.yar", "w", encoding="ISO-8859-1") as indexFile:
             indexFile.write("\n".join(modContent))
         return Yara_Malware_Analysis()
-        
+
     excludeSuffix = [".yar", ".yara"]
     allFiles = Target_Files(".")
     print("\n\n_______________________YARA MALWARE ANALYSIS_______________________\n")
@@ -316,12 +321,15 @@ def Wpvuldb_Api(data):
         base = "https://wpvulndb.com/api/v3/plugins/"
         url = base + data
 
-    token = ""
+    token = "YumCILXosAAvgLFDbAjK2z3iX4O41GS18exkg6KMM6U"
     authHeader = {"Authorization": "Token token=" + token}
     apiReq = Request(url, headers=authHeader)
     siteResponse = urlReq(apiReq).read()
     jsonResponse = json.loads(siteResponse.decode("ISO-8859-1"))
     listVuln = jsonResponse[data]["vulnerabilities"]
+
+    if not listVuln:
+        print("\n\tThere are no known vulnerabilities yet")
 
     for vuln in listVuln:
         vulName = vuln.get("title")
@@ -387,7 +395,7 @@ def verParser(fileName, slug):
         print("Plugin version cannot be determined.")
 
 
-def Handler(*args):
+def Handler():
 
     print("\n\n1. Analyze Wordpress Core files hashes.\n2. Replace Wordpress \
 Core files from trust source.\n3. Find suspect variables and functions.\n4\

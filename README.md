@@ -32,14 +32,14 @@ In the main folder of downloaded project:
 	
 Extrated from Yara documentation (needed in Debian-Like):
 
-*If you get an error like this:*
+> *If you get an error like this:*
 
-	yara: error while loading shared libraries: libyara.so.2: cannot open shared object file: No such file or directory
+>		yara: error while loading shared libraries: libyara.so.2: cannot open shared object file: No such file or directory
 
-*It means that the loader is not finding the libyara library which is located in /usr/local/lib. In some Linux flavors the loader doesn’t look for libraries in this path by default, we must instruct him to do so by adding /usr/local/lib to the loader configuration file /etc/ld.so.conf:*
+>*It means that the loader is not finding the libyara library which is located in /usr/local/lib. In some Linux flavors the loader doesn’t look for libraries in this path by default, we must instruct him to do so by adding /usr/local/lib to the loader configuration file /etc/ld.so.conf:*
 
-	sudo echo "/usr/local/lib" >> /etc/ld.so.conf
-	sudo ldconfig
+>		sudo echo "/usr/local/lib" >> /etc/ld.so.conf
+>		sudo ldconfig
 
 
 ## Getting Started

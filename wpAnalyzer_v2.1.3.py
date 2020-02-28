@@ -321,7 +321,7 @@ def Wpvuldb_Api(data):
         base = "https://wpvulndb.com/api/v3/plugins/"
         url = base + data
 
-    token = "YumCILXosAAvgLFDbAjK2z3iX4O41GS18exkg6KMM6U"
+    token = ""
     authHeader = {"Authorization": "Token token=" + token}
     apiReq = Request(url, headers=authHeader)
     siteResponse = urlReq(apiReq).read()

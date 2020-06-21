@@ -48,4 +48,4 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## Deployment
 
-It is required that wpAnalyzer be in the main directory of the target site for analisis.
+It is required that wpAnalyzer be in the main directory of the target site for analysis.
